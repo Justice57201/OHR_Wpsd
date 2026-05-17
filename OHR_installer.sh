@@ -21,7 +21,7 @@ echo "[2/6] Downloading files from GitHub..."
 
 curl -fsSL "$BASE_URL/HostFilesUpdate.sh" -o HostFilesUpdate.sh || { echo "Download failed: HostFilesUpdate.sh"; exit 1; }
 curl -fsSL "$BASE_URL/hostfilesupdate.service" -o hostfilesupdate.service || { echo "Download failed: hostfilesupdate.service"; exit 1; }
-curl -fsSL "$BASE_URL/apperance.php" -o apperance.php || { echo "Download failed: apperance.php"; exit 1; }
+curl -fsSL "$BASE_URL/appearance.php" -o appearance.php || { echo "Download failed: appearance.php"; exit 1; }
 curl -fsSL "$BASE_URL/last_heard_table.php" -o last_heard_table.php || { echo "Download failed: last_heard_table.php"; exit 1; }
 curl -fsSL "$BASE_URL/live_caller_backend.php" -o live_caller_backend.php || { echo "Download failed: live_caller_backend.php"; exit 1; }
 curl -fsSL "$BASE_URL/caller_details_table.php" -o caller_details_table.php || { echo "Download failed: caller_details_table.php"; exit 1; }
@@ -38,7 +38,7 @@ chmod 755 /usr/local/sbin/HostFilesUpdate.sh
 mv hostfilesupdate.service /etc/systemd/system/hostfilesupdate.service
 chmod 644 /etc/systemd/system/hostfilesupdate.service
 
-mv apperance.php /var/www/dashboard/admin/apperance.php
+mv appearance.php /var/www/dashboard/admin/appearance.php
 mv last_heard_table.php /var/www/dashboard/mmdvmhost/last_heard_table.php
 mv live_caller_backend.php /var/www/dashboard/mmdvmhost/live_caller_backend.php
 mv caller_details_table.php /var/www/dashboard/mmdvmhost/caller_details_table.php
@@ -47,7 +47,7 @@ mv index.php /var/www/dashboard/index.php
 mv ohr.png /var/www/dashboard/images/ohr.png
 mv favicon.ico /var/www/dashboard/images/favicon.ico
 
-chmod 644 /var/www/dashboard/admin/apperance.php
+chmod 644 /var/www/dashboard/admin/appearance.php
 chmod 644 /var/www/dashboard/mmdvmhost/last_heard_table.php
 chmod 644 /var/www/dashboard/mmdvmhost/live_caller_backend.php
 chmod 644 /var/www/dashboard/mmdvmhost/caller_details_table.php
