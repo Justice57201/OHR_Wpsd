@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# WPSD GitHub Installer (Enhanced Progress UI)
+# WPSD GitHub Installer (Enhanced UI)
 # By WRQC343 - Outlaw Ham Radio
 #
 
@@ -18,47 +18,59 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+# ---------------------------
+# UI HELPERS
+# ---------------------------
 log() { echo -e "${BLUE}[+]${NC} $1"; }
 ok()  { echo -e "${GREEN}[OK]${NC} $1"; }
+warn() { echo -e "${YELLOW}[!]${NC} $1"; }
 err() { echo -e "${RED}[X]${NC} $1"; }
 
-# ---------------------------
-# HEADER
-# ---------------------------
-clear
-echo -e "${GREEN}"
-echo "=============================================="
-echo "   Outlaw Ham Radio - WPSD Installer"
-echo "   Enhanced Progress Edition"
-echo "=============================================="
-echo -e "${NC}"
+spinner() {
+    local pid=$1
+    local msg=$2
+    local spin='-\|/'
+    i=0
+    echo -ne "${YELLOW}$msg ${NC}"
+    while kill -0 $pid 2>/dev/null; do
+        i=$(( (i+1) %4 ))
+        echo -ne "\r${YELLOW}$msg ${spin:$i:1}${NC}"
+        sleep 0.1
+    done
+    echo -ne "\r"
+}
 
-# ---------------------------
-# PREP
-# ---------------------------
-log "Preparing environment..."
-rm -rf "$TMP_DIR"
-mkdir -p "$TMP_DIR"
-cd "$TMP_DIR" || exit 1
-ok "Temp directory ready"
-
-# ---------------------------
-# DOWNLOAD FUNCTION (REAL PROGRESS BAR)
-# ---------------------------
 download() {
     local url=$1
     local out=$2
-
-    echo -e "${YELLOW}Downloading:${NC} $(basename "$out")"
-
-    curl -fSL --progress-bar "$url" -o "$out" \
-        || { err "Failed download: $(basename "$out")"; exit 1; }
-
-    ok "$(basename "$out") downloaded"
+    curl -fsSL "$url" -o "$out" &
+    spinner $! "Downloading $(basename "$out")"
+    wait $! || { err "Failed $(basename "$out")"; exit 1; }
+    ok "Downloaded $(basename "$out")"
 }
 
 # ---------------------------
-# STEP 2 - DOWNLOAD FILES
+# START
+# ---------------------------
+clear
+
+echo -e "${GREEN}"
+echo "=============================================="
+echo "   Outlaw Ham Radio - WPSD Installer"
+echo "=============================================="
+echo -e "${NC}"
+
+set -e
+
+log "Preparing temp directory..."
+rm -rf "$TMP_DIR"
+mkdir -p "$TMP_DIR"
+cd "$TMP_DIR"
+
+log "Starting installation sequence..."
+
+# ---------------------------
+# DOWNLOADS
 # ---------------------------
 echo -e "\n${BLUE}[ STEP 2/7 ] Downloading Files ${NC}\n"
 
@@ -74,17 +86,18 @@ download "$BASE_URL/ohr.png" ohr.png
 download "$BASE_URL/favicon.ico" favicon.ico
 
 # ---------------------------
-# STEP 3 - INSTALL FILES
+# INSTALL
 # ---------------------------
 echo -e "\n${BLUE}[ STEP 3/7 ] Installing Files ${NC}\n"
 
-mv HostFilesUpdate.sh /usr/local/sbin/
-chmod 755 /usr/local/sbin/HostFilesUpdate.sh
-ok "Installed HostFilesUpdate.sh"
+install_file() {
+    mv "$1" "$2"
+    chmod "$3" "$2"
+    ok "Installed $2"
+}
 
-mv hostfilesupdate.service /etc/systemd/system/hostfilesupdate.service
-chmod 644 /etc/systemd/system/hostfilesupdate.service
-ok "Installed systemd service"
+install_file HostFilesUpdate.sh /usr/local/sbin/HostFilesUpdate.sh 755
+install_file hostfilesupdate.service /etc/systemd/system/hostfilesupdate.service 644
 
 mv appearance.php /var/www/dashboard/admin/appearance.php
 mv last_heard_table.php /var/www/dashboard/mmdvmhost/last_heard_table.php
@@ -95,14 +108,15 @@ mv index.php /var/www/dashboard/index.php
 mv ohr.png /var/www/dashboard/images/ohr.png
 mv favicon.ico /var/www/dashboard/images/favicon.ico
 
+ok "Web files installed"
+
 chmod 644 /var/www/dashboard/admin/appearance.php
 chmod 644 /var/www/dashboard/mmdvmhost/*.php
 chmod 644 /var/www/dashboard/index.php
 chmod 644 /var/www/dashboard/images/*
-ok "Web dashboard files installed"
 
 # ---------------------------
-# STEP 4 - RENAME OLD SERVICES
+# CLEAN OLD SERVICES
 # ---------------------------
 echo -e "\n${BLUE}[ STEP 4/7 ] Cleaning Old Services ${NC}\n"
 
@@ -119,51 +133,50 @@ if [ -f /etc/systemd/system/wpsd-nightly-tasks.timer ]; then
 fi
 
 # ---------------------------
-# STEP 5 - SYSTEMD
+# SYSTEMD
 # ---------------------------
 echo -e "\n${BLUE}[ STEP 5/7 ] Systemd Setup ${NC}\n"
 
 systemctl daemon-reload
 systemctl enable hostfilesupdate.service
 systemctl restart hostfilesupdate.service
-ok "Systemd service enabled & restarted"
+
+ok "Systemd service enabled."
 
 # ---------------------------
-# CLEAN OLD FILES
+# CLEAN CSV
 # ---------------------------
 rm -f /usr/local/etc/nextionUsers.csv
 rm -f /usr/local/etc/nextionGroups.csv
 ok "Cleaned old CSV files"
 
 # ---------------------------
-# STEP 6 - CLEANUP
+# CLEANUP
 # ---------------------------
 echo -e "\n${BLUE}[ STEP 6/7 ] Cleanup ${NC}\n"
 
 cd /
 rm -rf "$TMP_DIR"
-ok "Temporary files removed"
+ok "Temporary files removed."
 
 # ---------------------------
-# STEP 7 - RUN UPDATE SCRIPT
+# FINAL RUN
 # ---------------------------
-echo -e "\n${BLUE}[ STEP 7/7 ] Running HostFilesUpdate ${NC}\n"
+echo -e "\n${BLUE}[ STEP 7/7 ] Running Update Script ${NC}\n"
 
 if [ -f /usr/local/sbin/HostFilesUpdate.sh ]; then
     /usr/local/sbin/HostFilesUpdate.sh
-    ok "HostFilesUpdate completed"
+    ok "HostFilesUpdate completed."
 else
-    err "HostFilesUpdate.sh not found!"
+    err "HostFilesUpdate.sh missing!"
     exit 1
 fi
 
 # ---------------------------
-# FINISH
+# DONE
 # ---------------------------
 echo -e "\n${GREEN}"
 echo "======================================"
-echo "   INSTALL COMPLETE SUCCESS"
+echo "  INSTALL COMPLETE SUCCESSFULLY."
 echo "======================================"
 echo -e "${NC}"
-echo " Outlaw Ham Radio Install Complete!"
-echo "======================================"
