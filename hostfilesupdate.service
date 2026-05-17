@@ -1,0 +1,13 @@
+[Unit]
+Description=Host Files Update Script
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/HostFilesUpdate.sh
+User=root
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
