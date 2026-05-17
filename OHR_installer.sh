@@ -1,0 +1,94 @@
+#!/bin/bash
+#
+# WPSD GitHub Installer
+# By WRQC343 - Outlaw Ham Radio
+#
+
+set -e
+
+BASE_URL="https://raw.githubusercontent.com/Justice57201/OHR/main"
+
+echo "========================++++=============="
+echo " Outlaw Ham Radio WPSD Installer Starting"
+echo "============================++++=========="
+
+TMP_DIR="/tmp/wpsd_install"
+rm -rf "$TMP_DIR"
+mkdir -p "$TMP_DIR"
+cd "$TMP_DIR" || exit 1
+
+echo "[2/6] Downloading files from GitHub..."
+
+curl -fsSL "$BASE_URL/HostFilesUpdate.sh" -o HostFilesUpdate.sh || { echo "Download failed: HostFilesUpdate.sh"; exit 1; }
+curl -fsSL "$BASE_URL/hostfilesupdate.service" -o hostfilesupdate.service || { echo "Download failed: hostfilesupdate.service"; exit 1; }
+curl -fsSL "$BASE_URL/apperance.php" -o apperance.php || { echo "Download failed: apperance.php"; exit 1; }
+curl -fsSL "$BASE_URL/last_heard_table.php" -o last_heard_table.php || { echo "Download failed: last_heard_table.php"; exit 1; }
+curl -fsSL "$BASE_URL/live_caller_backend.php" -o live_caller_backend.php || { echo "Download failed: live_caller_backend.php"; exit 1; }
+curl -fsSL "$BASE_URL/caller_details_table.php" -o caller_details_table.php || { echo "Download failed: caller_details_table.php"; exit 1; }
+curl -fsSL "$BASE_URL/local_tx_table.php" -o local_tx_table.php || { echo "Download failed: local_tx_table.php"; exit 1; }
+curl -fsSL "$BASE_URL/index.php" -o index.php || { echo "Download failed: index.php"; exit 1; }
+curl -fsSL "$BASE_URL/ohr.png" -o ohr.png || { echo "Download failed: ohr.png"; exit 1; }
+curl -fsSL "$BASE_URL/favicon.ico" -o favicon.ico || { echo "Download failed: favicon.ico"; exit 1; }
+
+echo "[3/6] Installing files..."
+
+mv HostFilesUpdate.sh /usr/local/sbin/
+chmod 755 /usr/local/sbin/HostFilesUpdate.sh
+
+mv hostfilesupdate.service /etc/systemd/system/hostfilesupdate.service
+chmod 644 /etc/systemd/system/hostfilesupdate.service
+
+mv apperance.php /var/www/dashboard/admin/apperance.php
+mv last_heard_table.php /var/www/dashboard/mmdvmhost/last_heard_table.php
+mv live_caller_backend.php /var/www/dashboard/mmdvmhost/live_caller_backend.php
+mv caller_details_table.php /var/www/dashboard/mmdvmhost/caller_details_table.php
+mv local_tx_table.php /var/www/dashboard/mmdvmhost/local_tx_table.php
+mv index.php /var/www/dashboard/index.php
+mv ohr.png /var/www/dashboard/images/ohr.png
+mv favicon.ico /var/www/dashboard/images/favicon.ico
+
+chmod 644 /var/www/dashboard/admin/apperance.php
+chmod 644 /var/www/dashboard/mmdvmhost/last_heard_table.php
+chmod 644 /var/www/dashboard/mmdvmhost/live_caller_backend.php
+chmod 644 /var/www/dashboard/mmdvmhost/caller_details_table.php
+chmod 644 /var/www/dashboard/mmdvmhost/local_tx_table.php
+chmod 644 /var/www/dashboard/index.php
+chmod 644 /var/www/dashboard/images/ohr.png
+chmod 644 /var/www/dashboard/images/favicon.ico
+
+echo "[4/6] Renaming old WPSD nightly task files..."
+
+if [ -f /etc/systemd/system/wpsd-nightly-tasks.service ]; then
+    mv /etc/systemd/system/wpsd-nightly-tasks.service \
+       /etc/systemd/system/wpsd-nightly-tasks.service.old
+fi
+
+if [ -f /etc/systemd/system/wpsd-nightly-tasks.timer ]; then
+    mv /etc/systemd/system/wpsd-nightly-tasks.timer \
+       /etc/systemd/system/wpsd-nightly-tasks.timer.old
+fi
+
+echo "[5/6] Setting up systemd service..."
+
+systemctl daemon-reload
+systemctl enable hostfilesupdate.service
+systemctl restart hostfilesupdate.service
+
+rm -f /usr/local/etc/nextionUsers.csv
+rm -f /usr/local/etc/nextionGroups.csv
+
+echo "[6/6] Cleaning up..."
+cd /
+rm -rf "$TMP_DIR"
+
+echo "[7/7] Running HostFilesUpdate.sh..."
+if [ -f /usr/local/sbin/HostFilesUpdate.sh ]; then
+    /usr/local/sbin/HostFilesUpdate.sh
+else
+    echo "ERROR: HostFilesUpdate.sh not found!"
+    exit 1
+fi
+
+echo "======================================"
+echo " Outlaw Ham Radio Install Complete!"
+echo "======================================"
