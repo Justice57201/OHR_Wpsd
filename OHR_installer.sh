@@ -6,7 +6,7 @@
 
 set -e
 
-BASE_URL="https://raw.githubusercontent.com/Justice57201/OHR/main"
+BASE_URL="https://raw.githubusercontent.com/Justice57201/OHR_Wpsd/main"
 
 echo "========================++++=============="
 echo " Outlaw Ham Radio WPSD Installer Starting"
