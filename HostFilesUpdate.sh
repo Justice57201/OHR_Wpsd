@@ -17,9 +17,6 @@ if [ "$(expr length `hostname -I | cut -d' ' -f1`x)" == "1" ]; then
 	exit 0
 fi
 
-# Get the Pi-Star Version
-pistarCurVersion=$(awk -F "= " '/Version/ {print $2}' /etc/pistar-release)
-
 APRSHOSTS=/usr/local/etc/APRSHosts.txt
 DCSHOSTS=/usr/local/etc/DCS_Hosts.txt
 DExtraHOSTS=/usr/local/etc/DExtra_Hosts.txt
