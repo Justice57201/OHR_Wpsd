@@ -92,5 +92,3 @@ fi
 echo "======================================"
 echo " Outlaw Ham Radio Install Complete!"
 echo "======================================"
-
-echo -e "${NC}"
