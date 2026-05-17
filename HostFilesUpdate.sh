@@ -3,12 +3,12 @@
 #                                                       #
 #              HostFilesUpdate.sh Updater               #
 #                                                       #
-#      Written for WPSD														      #
+#      Written for WPSD                                 #
 #               By Justice                              #
 #                                                       #
-#               Version 1.1.0  				                  #
+#               Version 1.1.0                           #
 #                                                       #
-#   																								    #
+#   			     								    #
 #                                                       #
 #########################################################
 
@@ -36,7 +36,7 @@ TGLISTNXDN=/usr/local/etc/TGList_NXDN.txt
 TGLISTYSF=/usr/local/etc/TGList_YSF.txt
 NEXTIONGROUPS=/usr/local/etc/nextionGroups.txt
 NEXTIONUSERS=/usr/local/etc/nextionUsers.csv
-USERSCSV=/usr/local/etc/users.csv
+USERCSV=/usr/local/etc/user.csv
 
 # How many backups
 FILEBACKUP=1
@@ -148,16 +148,16 @@ else
         -o "${NEXTIONUSERS}"
 fi
 
-if [ -f "${USERSCSV}" ]; then
-    if [ "$(find "${USERSCSV}" -mtime +7 -print)" ]; then
-        curl -sSL "https://www.gmrs-link.com/ohr/hblink/users.csv" \
+if [ -f "${USERCSV}" ]; then
+    if [ "$(find "${USERCSV}" -mtime +7 -print)" ]; then
+        curl -sSL "https://www.gmrs-link.com/ohr/hblink/user.csv" \
             --user-agent "Pi-Star_${pistarCurVersion}" \
-            -o "${USERSCSV}"
+            -o "${USERCSV}"
     fi
 else
-    curl -sSL "https://www.gmrs-link.com/ohr/hblink/users.csv" \
+    curl -sSL "https://www.gmrs-link.com/ohr/hblink/user.csv" \
         --user-agent "Pi-Star_${pistarCurVersion}" \
-        -o "${USERSCSV}"
+        -o "${USERCSV}"
 fi
 
 # Overrides
