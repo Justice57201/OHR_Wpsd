@@ -3,8 +3,8 @@
 #                                                       #
 #              HostFilesUpdate.sh Updater               #
 #                                                       #
-#      Written for WPSD                                 #
-#               By Justice                              #
+#           Written for WPSD                            #
+#                  By Justice                           #
 #                                                       #
 #               Version 1.1.0                           #
 #                                                       #
@@ -113,6 +113,9 @@ else
 fi
 
 curl -sSL https://www.gmrs-link.com/ohr/mmdvm/DMRIds.dat.gz --user-agent "Pi-Star_${pistarCurVersion}" | gunzip -c > ${DMRIDFILE}
+curl -sSL https://www.gmrs-link.com/ohr/mmdvm/nextionUsers.csv --user-agent "Pi-Star_${pistarCurVersion}" -o "${NEXTIONUSERS}"
+curl -sSL https://www.gmrs-link.com/ohr/hblink/user.csv --user-agent "Pi-Star_${pistarCurVersion}" -o "${USERCSV}"
+
 curl --fail -o ${P25HOSTS} -s https://www.gmrs-link.com/ohr/mmdvm/P25_Hosts.txt --user-agent "Pi-Star_${pistarCurVersion}"
 curl --fail -o ${M17HOSTS} -s http://www.pistar.uk/downloads/M17_Hosts.txt --user-agent "Pi-Star_${pistarCurVersion}"
 curl --fail -o ${YSFHOSTS} -s http://www.pistar.uk/downloads/YSF_Hosts.txt --user-agent "Pi-Star_${pistarCurVersion}"
@@ -120,45 +123,11 @@ curl --fail -o ${FCSHOSTS} -s http://www.pistar.uk/downloads/FCS_Hosts.txt --use
 curl --fail -o ${XLXHOSTS} -s http://www.pistar.uk/downloads/XLXHosts.txt --user-agent "Pi-Star_${pistarCurVersion}"
 curl --fail -o ${NXDNIDFILE} -s https://www.gmrs-link.com/ohr/mmdvm/NXDN.csv --user-agent "Pi-Star_${pistarCurVersion}"
 curl --fail -o ${NXDNHOSTS} -s https://www.gmrs-link.com/ohr/mmdvm/NXDN_Hosts.txt --user-agent "Pi-Star_${pistarCurVersion}"
-
 curl --fail -o ${TGLISTBM} -s http://www.pistar.uk/downloads/TGList_BM.txt --user-agent "Pi-Star_${pistarCurVersion}"
 curl --fail -o ${TGLISTP25} -s https://www.gmrs-link.com/ohr/mmdvm/TGList_P25.txt --user-agent "Pi-Star_${pistarCurVersion}"
 curl --fail -o ${TGLISTNXDN} -s https://www.gmrs-link.com/ohr/mmdvm/TGList_NXDN.txt --user-agent "Pi-Star_${pistarCurVersion}"
 curl --fail -o ${TGLISTYSF} -s http://www.pistar.uk/downloads/TGList_YSF.txt --user-agent "Pi-Star_${pistarCurVersion}"
-
-# Download Nextion Groups
-if [ -f ${NEXTIONGROUPS} ]; then
-  if [[ $(find "${NEXTIONGROUPS}" -mtime +7) ]]; then
-    curl --fail -o ${NEXTIONGROUPS} -s https://www.gmrs-link.com/ohr/mmdvm/groups.txt --user-agent "Pi-Star_${pistarCurVersion}"
-  fi
-else
-  curl --fail -o ${NEXTIONGROUPS} -s https://www.gmrs-link.com/ohr/mmdvm/groups.txt --user-agent "Pi-Star_${pistarCurVersion}"
-fi
-
-# Download Nextion Users
-if [ -f "${NEXTIONUSERS}" ]; then
-    if [ "$(find "${NEXTIONUSERS}" -mtime +7 -print)" ]; then
-        curl -sSL "https://www.gmrs-link.com/ohr/mmdvm/nextionUsers.csv" \
-            --user-agent "Pi-Star_${pistarCurVersion}" \
-            -o "${NEXTIONUSERS}"
-    fi
-else
-    curl -sSL "https://www.gmrs-link.com/ohr/mmdvm/nextionUsers.csv" \
-        --user-agent "Pi-Star_${pistarCurVersion}" \
-        -o "${NEXTIONUSERS}"
-fi
-
-if [ -f "${USERCSV}" ]; then
-    if [ "$(find "${USERCSV}" -mtime +7 -print)" ]; then
-        curl -sSL "https://www.gmrs-link.com/ohr/hblink/user.csv" \
-            --user-agent "Pi-Star_${pistarCurVersion}" \
-            -o "${USERCSV}"
-    fi
-else
-    curl -sSL "https://www.gmrs-link.com/ohr/hblink/user.csv" \
-        --user-agent "Pi-Star_${pistarCurVersion}" \
-        -o "${USERCSV}"
-fi
+curl --fail -o ${NEXTIONGROUPS} -s https://www.gmrs-link.com/ohr/mmdvm/groups.txt --user-agent "Pi-Star_${pistarCurVersion}"
 
 # Overrides
 if [ -f "/root/DMR_Hosts.txt" ]; then
