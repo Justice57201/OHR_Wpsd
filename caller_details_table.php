@@ -145,7 +145,7 @@ for ($i = 0;  ($i <= 0); $i++) { //Last 20  calls
 		$callMatch = explode(",", $callMatch[0]);
 		$name    = sentence_cap(" ", "$callMatch[2]");
 		$city    = ucwords_ext( $callMatch[4] );
-		$state   = ucwords_ext( $callMatch[5] );
+		$state = strtoupper(trim($callMatch[5]));
 		$country = ucwords_ext( $callMatch[6] );
 		if(strpos($country, "United States") !== false) {
 		   $country = str_replace("United States", "USA", $country);
