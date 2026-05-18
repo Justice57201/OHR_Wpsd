@@ -3,10 +3,10 @@
 #                                                       #
 #              HostFilesUpdate.sh Updater               #
 #                                                       #
-#           Written for WPSD                            #
-#                  By Justice                           #
+#      Written for WPSD                                 #
+#             By Justice                                #
 #                                                       #
-#               Version 1.1.0                           #
+#             Version 1.1.0                             #
 #                                                       #
 #   			     								    #
 #                                                       #
