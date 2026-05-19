@@ -6,6 +6,7 @@
 
 set -e
 
+VERSION="1.2.0"
 BASE_URL="https://raw.githubusercontent.com/Justice57201/OHR_Wpsd/main"
 
 echo "========================++++=============="
@@ -17,15 +18,15 @@ rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR"
 cd "$TMP_DIR" || exit 1
 
-sudo rm -f /usr/local/etc/DCS_Hosts.txt \
-           /usr/local/etc/DExtra_Hosts.txt \
-           /usr/local/etc/DPlus_Hosts.txt \
-           /usr/local/etc/M17Hosts.txt \
-           /usr/local/etc/YSFHosts.txt \
-           /usr/local/etc/FCSHosts.txt \
-           /usr/local/etc/XLXHosts.txt \
-           /usr/local/etc/TGList_BM.txt \
-           /usr/local/etc/TGList_YSF.txt
+rm -f /usr/local/etc/DCS_Hosts.txt \
+      /usr/local/etc/DExtra_Hosts.txt \
+      /usr/local/etc/DPlus_Hosts.txt \
+      /usr/local/etc/M17Hosts.txt \
+      /usr/local/etc/YSFHosts.txt \
+      /usr/local/etc/FCSHosts.txt \
+      /usr/local/etc/XLXHosts.txt \
+      /usr/local/etc/TGList_BM.txt \
+      /usr/local/etc/TGList_YSF.txt
 
 echo "[2/5] Downloading files from GitHub..."
 
