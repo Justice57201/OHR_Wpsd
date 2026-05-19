@@ -10,7 +10,7 @@ VERSION="1.2.0"
 BASE_URL="https://raw.githubusercontent.com/Justice57201/OHR_Wpsd/main"
 
 echo "========================++++=============="
-echo " Outlaw Ham Radio WPSD Installer Starting"
+echo " Outlaw Ham Radio WPSD Installer v$VERSION"
 echo "============================++++=========="
 
 TMP_DIR="/tmp/wpsd_install"
