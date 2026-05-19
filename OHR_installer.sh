@@ -17,7 +17,17 @@ rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR"
 cd "$TMP_DIR" || exit 1
 
-echo "[2/6] Downloading files from GitHub..."
+sudo rm -f /usr/local/etc/DCS_Hosts.txt \
+           /usr/local/etc/DExtra_Hosts.txt \
+           /usr/local/etc/DPlus_Hosts.txt \
+           /usr/local/etc/M17Hosts.txt \
+           /usr/local/etc/YSFHosts.txt \
+           /usr/local/etc/FCSHosts.txt \
+           /usr/local/etc/XLXHosts.txt \
+           /usr/local/etc/TGList_BM.txt \
+           /usr/local/etc/TGList_YSF.txt
+
+echo "[2/5] Downloading files from GitHub..."
 
 curl -fsSL "$BASE_URL/HostFilesUpdate.sh" -o HostFilesUpdate.sh || { echo "Download failed: HostFilesUpdate.sh"; exit 1; }
 curl -fsSL "$BASE_URL/hostfilesupdate.service" -o hostfilesupdate.service || { echo "Download failed: hostfilesupdate.service"; exit 1; }
@@ -30,7 +40,7 @@ curl -fsSL "$BASE_URL/index.php" -o index.php || { echo "Download failed: index.
 curl -fsSL "$BASE_URL/ohr.png" -o ohr.png || { echo "Download failed: ohr.png"; exit 1; }
 curl -fsSL "$BASE_URL/favicon.ico" -o favicon.ico || { echo "Download failed: favicon.ico"; exit 1; }
 
-echo "[3/6] Installing files..."
+echo "[3/5] Installing files..."
 
 mv HostFilesUpdate.sh /usr/local/sbin/
 chmod 755 /usr/local/sbin/HostFilesUpdate.sh
@@ -56,8 +66,6 @@ chmod 644 /var/www/dashboard/index.php
 chmod 644 /var/www/dashboard/images/ohr.png
 chmod 644 /var/www/dashboard/images/favicon.ico
 
-echo "[4/6] Renaming old WPSD nightly task files..."
-
 if [ -f /etc/systemd/system/wpsd-nightly-tasks.service ]; then
     mv /etc/systemd/system/wpsd-nightly-tasks.service \
        /etc/systemd/system/wpsd-nightly-tasks.service.old
@@ -68,7 +76,7 @@ if [ -f /etc/systemd/system/wpsd-nightly-tasks.timer ]; then
        /etc/systemd/system/wpsd-nightly-tasks.timer.old
 fi
 
-echo "[5/6] Setting up systemd service..."
+echo "[4/5] Setting up systemd service..."
 
 systemctl daemon-reload
 systemctl enable hostfilesupdate.service
@@ -77,7 +85,7 @@ systemctl restart hostfilesupdate.service
 rm -f /usr/local/etc/nextionUsers.csv
 rm -f /usr/local/etc/nextionGroups.csv
 
-echo "[6/6] Cleaning up..."
+echo "[5/5] Cleaning up..."
 cd /
 rm -rf "$TMP_DIR"
 
