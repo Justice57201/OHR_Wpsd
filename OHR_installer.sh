@@ -2,6 +2,7 @@
 #
 # WPSD GitHub Installer
 # By WRQC343 - Outlaw Ham Radio
+# Version 1.2.0
 #
 
 set -e
