@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # WPSD GitHub Installer
-# By WRQC343 - Outlaw Ham Radio
+# By Justice - Outlaw Ham Radio
 # Version 1.2.0
 #
 
