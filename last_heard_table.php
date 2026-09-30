@@ -27,9 +27,9 @@ if (isset($_SESSION['WPSDdashConfig']['WPSD']['CallLookupProvider'])) {
 if (($callsignLookupSvc != "OHR") && ($callsignLookupSvc != "QRZ")) {
     $callsignLookupSvc = "QRZ";
 }
-$idLookupUrl = "https://gmrs-link.com/ohr/view.php?q=";
+$idLookupUrl = "https://ohr.gmrs-link.com/view.php?q=";
 if ($callsignLookupSvc == "OHR") {
-    $callsignLookupUrl = "https://gmrs-link.com/ohr/view.php?q=";
+    $callsignLookupUrl = "https://ohr.gmrs-link.com/view.php?q=";
 }
 if ($callsignLookupSvc == "QRZ") {
     $callsignLookupUrl = "https://www.qrz.com/db/";
