@@ -7,7 +7,7 @@
 
 set -e
 
-VERSION="1.2.0"
+VERSION="1.2.1"
 BASE_URL="https://raw.githubusercontent.com/Justice57201/OHR_Wpsd/main"
 
 echo "========================++++=============="
