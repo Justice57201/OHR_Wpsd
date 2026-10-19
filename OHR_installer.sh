@@ -2,7 +2,7 @@
 #
 # WPSD GitHub Installer
 # By Justice - Outlaw Ham Radio
-# Version 1.2.0
+# Version 1.2.1
 #
 
 set -e
